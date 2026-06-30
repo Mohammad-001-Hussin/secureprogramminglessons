@@ -12,7 +12,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->execute([$username]);
         if ($stmt->rowCount() == 0) {
             $stmt = $pdo->prepare("INSERT INTO user (username, password, balance, isAdmin) VALUES (?, ?, 100, 0)");
-            $stmt->execute([$username, $password]);
+            // dit is niet veilig genoeg, om het veiliger te maken dan moet je de volgende nog toevoegen:  $hashed = password_hash($password, PASSWORD_DEFAULT); dan eronder moet je de volgende ook zetten: $stmt->excute([$username, $hashed]);
+            $hashed = password_hash($password, PASSWORD_DEFAULT);
+            $stmt->execute([$username, $hashed]);
             $success = "Je account is aangemaakt, je kunt nu inloggen";
         } else {
             $error = "Deze gebruikersnaam is al in gebruik";
