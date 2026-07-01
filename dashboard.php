@@ -12,6 +12,20 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     $ontvanger = $_POST['ontvanger'];
     $bedrag = $_POST['bedrag'];
 
+    // Hier moet bedrag de bedrag een positieve getaal zijn!!
+    if(!is_numeric($bedrag) || $bedrag <= 0) {
+        $error = "Bedrag moet een poesitieve getaal zijn!!";
+    }
+
+    // Bedrag mag niet groter dan mijn saldo zijn!!
+    if($bedrag > $_SESSION['user']['balance']) {
+        $error = "Je hebt niet geoeg saldo";
+    }
+
+    if(isset($error)) {
+        header("location: dashboard.php");
+        exit;
+    }
     // Controleer of de ontvanger bestaat
     $stmt = $pdo->prepare("SELECT * FROM user WHERE username = ?");
     $stmt->execute([$ontvanger]);
